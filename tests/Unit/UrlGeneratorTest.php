@@ -9,6 +9,7 @@ use Chubbyphp\Framework\Router\HackRouting\UrlGenerator;
 use Chubbyphp\Framework\Router\Route;
 use Chubbyphp\Framework\Router\Routes;
 use Chubbyphp\Mock\MockByCallsTrait;
+use HackRouting\Cache\MemoryCache;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,15 +28,15 @@ final class UrlGeneratorTest extends TestCase
                 static function (): void {
                 }
             )),
-        ]));
+        ]), new MemoryCache(), '/prefix');
 
         self::assertSame(
-            '/hello/world-suffix/optional-part?key=value',
+            '/prefix/hello/world-suffix/optional-part?key=value',
             $urlGenerator->generatePath('hello', ['name' => 'world'], ['key' => 'value'])
         );
 
         self::assertSame(
-            '/hello/world-suffix/optional-part.xml?key=value',
+            '/prefix/hello/world-suffix/optional-part.xml?key=value',
             $urlGenerator->generatePath('hello', ['name' => 'world', 'format' => 'xml'], ['key' => 'value'])
         );
     }
