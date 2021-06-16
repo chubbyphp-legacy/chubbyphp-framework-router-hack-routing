@@ -7,11 +7,10 @@ namespace Chubbyphp\Framework\Router\HackRouting;
 use Chubbyphp\Framework\Router\Exceptions\MissingAttributeForPathGenerationException;
 use Chubbyphp\Framework\Router\Exceptions\MissingRouteByNameException;
 use Chubbyphp\Framework\Router\Exceptions\NotMatchingValueForPathGenerationException;
+use Chubbyphp\Framework\Router\HackRouting\RouteParser\RouteParserInterface;
 use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\RoutesInterface;
 use Chubbyphp\Framework\Router\UrlGeneratorInterface;
-use HackRouting\Cache\CacheInterface;
-use HackRouting\Cache\NullCache;
 use HackRouting\PatternParser\LiteralNode;
 use HackRouting\PatternParser\OptionalNode;
 use HackRouting\PatternParser\ParameterNode;
@@ -26,14 +25,14 @@ final class UrlGenerator implements UrlGeneratorInterface
      */
     private array $routesByName;
 
-    private CacheInterface $cache;
+    private RouteParserInterface $routeParser;
 
     private string $basePath;
 
-    public function __construct(RoutesInterface $routes, ?CacheInterface $cache = null, string $basePath = '')
+    public function __construct(RoutesInterface $routes, ?RouteParserInterface $routeParser = null, string $basePath = '')
     {
         $this->routesByName = $routes->getRoutesByName();
-        $this->cache = $cache ?? new NullCache();
+        $this->routeParser = $routeParser ?? new RouteParser();
         $this->basePath = $basePath;
     }
 
@@ -59,13 +58,7 @@ final class UrlGenerator implements UrlGeneratorInterface
      */
     public function generatePath(string $name, array $attributes = [], array $queryParams = []): string
     {
-        $parsedRoutesByName = $this->getParsedRoutesByName();
-
-        if (!isset($parsedRoutesByName[$name])) {
-            throw MissingRouteByNameException::create($name);
-        }
-
-        $path = $this->pathFromNodes($parsedRoutesByName[$name], $name, $attributes);
+        $path = $this->pathFromNodes($this->getParsedRouteByName($name), $name, $attributes);
 
         if ([] === $queryParams) {
             return $this->basePath.$path;
@@ -74,19 +67,13 @@ final class UrlGenerator implements UrlGeneratorInterface
         return $this->basePath.$path.'?'.\http_build_query($queryParams);
     }
 
-    /**
-     * @return array<string, PatternNode>
-     */
-    private function getParsedRoutesByName(): array
+    private function getParsedRouteByName(string $name): PatternNode
     {
-        return $this->cache->get(self::class.':'.spl_object_id($this), function () {
-            $parsedRoutesByName = [];
-            foreach ($this->routesByName as $name => $route) {
-                $parsedRoutesByName[$name] = RouteParser::parse($route->getPath());
-            }
+        if (!isset($this->routesByName[$name])) {
+            throw MissingRouteByNameException::create($name);
+        }
 
-            return $parsedRoutesByName;
-        });
+        return $this->routeParser->parse($this->routesByName[$name]);
     }
 
     /**

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Chubbyphp\Tests\Framework\Router\HackRouting\Unit;
 
 use Chubbyphp\Framework\RequestHandler\CallbackRequestHandler;
+use Chubbyphp\Framework\Router\HackRouting\RouteParser\MemoryRouteParserDecorator;
 use Chubbyphp\Framework\Router\HackRouting\UrlGenerator;
 use Chubbyphp\Framework\Router\Route;
 use Chubbyphp\Framework\Router\Routes;
 use Chubbyphp\Mock\MockByCallsTrait;
-use HackRouting\Cache\MemoryCache;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,7 +28,7 @@ final class UrlGeneratorTest extends TestCase
                 static function (): void {
                 }
             )),
-        ]), new MemoryCache(), '/prefix');
+        ]), new MemoryRouteParserDecorator(), '/prefix');
 
         self::assertSame(
             '/prefix/hello/world-suffix/optional-part?key=value',
