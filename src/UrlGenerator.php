@@ -7,6 +7,7 @@ namespace Chubbyphp\Framework\Router\HackRouting;
 use Chubbyphp\Framework\Router\Exceptions\MissingAttributeForPathGenerationException;
 use Chubbyphp\Framework\Router\Exceptions\MissingRouteByNameException;
 use Chubbyphp\Framework\Router\Exceptions\NotMatchingValueForPathGenerationException;
+use Chubbyphp\Framework\Router\HackRouting\RouteParser\RouteParser;
 use Chubbyphp\Framework\Router\HackRouting\RouteParser\RouteParserInterface;
 use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\RoutesInterface;
@@ -14,7 +15,6 @@ use Chubbyphp\Framework\Router\UrlGeneratorInterface;
 use HackRouting\PatternParser\LiteralNode;
 use HackRouting\PatternParser\OptionalNode;
 use HackRouting\PatternParser\ParameterNode;
-use HackRouting\PatternParser\Parser as RouteParser;
 use HackRouting\PatternParser\PatternNode;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -114,14 +114,17 @@ final class UrlGenerator implements UrlGeneratorInterface
         }
 
         $value = (string) $attributes[$attribute];
-        $pattern = '!^'.$parameterNode->getRegexp().'$!';
 
-        if (1 !== \preg_match($pattern, $value)) {
+        $regexp = $parameterNode->getRegexp();
+
+        $pattern = '!^'.$regexp.'$!';
+
+        if (null !== $regexp && 1 !== \preg_match($pattern, $value)) {
             throw NotMatchingValueForPathGenerationException::create(
                 $name,
                 $attribute,
                 $value,
-                $parameterNode->getRegexp()
+                $pattern
             );
         }
 
