@@ -7,7 +7,7 @@ namespace Chubbyphp\Framework\Router\HackRouting\RouteParser;
 use Chubbyphp\Framework\Router\RouteInterface;
 use HackRouting\PatternParser\PatternNode;
 
-final class MemoryRouteParserDecorator implements RouteParserInterface
+final class MemoryRouteParser implements RouteParserInterface
 {
     private RouteParserInterface $routeParser;
 
