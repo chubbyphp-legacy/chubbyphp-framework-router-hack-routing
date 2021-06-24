@@ -83,9 +83,7 @@ final class UrlGenerator implements UrlGeneratorInterface
     {
         $path = '';
         foreach ($patternNode->getChildren() as $childNode) {
-            if ($childNode instanceof PatternNode) {
-                $path .= $this->pathFromNodes($childNode, $name, $attributes);
-            } elseif ($childNode instanceof LiteralNode) {
+            if ($childNode instanceof LiteralNode) {
                 $path .= $childNode->getText();
             } elseif ($childNode instanceof ParameterNode) {
                 $path .= $this->getAttributeValue($childNode, $name, $attributes);
@@ -94,8 +92,6 @@ final class UrlGenerator implements UrlGeneratorInterface
                     $path .= $this->pathFromNodes($childNode->getPattern(), $name, $attributes);
                 } catch (MissingAttributeForPathGenerationException $e) {
                 }
-            } else {
-                throw new \Exception('Unknown node type "%s"', get_class($childNode));
             }
         }
 
