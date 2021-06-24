@@ -124,7 +124,7 @@ final class UrlGenerator implements UrlGeneratorInterface
                 $name,
                 $attribute,
                 $value,
-                $pattern
+                $regexp
             );
         }
 

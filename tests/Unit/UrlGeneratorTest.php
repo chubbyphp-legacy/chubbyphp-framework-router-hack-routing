@@ -6,6 +6,7 @@ namespace Chubbyphp\Tests\Framework\Router\HackRouting\Unit;
 
 use Chubbyphp\Framework\Router\HackRouting\UrlGenerator;
 use Chubbyphp\Framework\Router\Route;
+use Chubbyphp\Framework\Router\RouterException;
 use Chubbyphp\Framework\Router\Routes;
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
@@ -74,5 +75,54 @@ final class UrlGeneratorTest extends TestCase
                 ['key1' => 'value1', 'key2' => 'value2']
             )
         );
+    }
+
+    public function testGenerateUriWithMissingAttribute(): void
+    {
+        $this->expectException(RouterException::class);
+        $this->expectExceptionMessage('Missing attribute "id" while path generation for route: "user"');
+        $this->expectExceptionCode(3);
+
+        /** @var MockObject|UriInterface $uri */
+        $uri = $this->getMockByCalls(UriInterface::class);
+
+        /** @var MockObject|ServerRequestInterface $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('getUri')->with()->willReturn($uri),
+        ]);
+
+        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
+
+        $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
+
+        $router = new UrlGenerator(new Routes([$route]));
+        $router->generateUrl($request, 'user');
+    }
+
+    public function testGenerateUriWithNotMatchingAttribute(): void
+    {
+        $this->expectException(RouterException::class);
+        $this->expectExceptionMessage(
+            'Not matching value "a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791" with pattern "\d+" on attribute "id" while'
+            .' path generation for route: "user"'
+        );
+        $this->expectExceptionCode(4);
+
+        /** @var MockObject|UriInterface $uri */
+        $uri = $this->getMockByCalls(UriInterface::class);
+
+        /** @var MockObject|ServerRequestInterface $request */
+        $request = $this->getMockByCalls(ServerRequestInterface::class, [
+            Call::create('getUri')->with()->willReturn($uri),
+        ]);
+
+        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
+
+        $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
+
+        $router = new UrlGenerator(new Routes([$route]));
+        $router->generateUrl($request, 'user', ['id' => 'a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791']);
     }
 }
