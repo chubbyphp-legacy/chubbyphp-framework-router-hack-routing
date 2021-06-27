@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Framework\Router\HackRouting\Unit;
 
+use Chubbyphp\Framework\Router\HackRouting\Cache\MemoryCache;
 use Chubbyphp\Framework\Router\HackRouting\UrlGenerator;
 use Chubbyphp\Framework\Router\Route;
 use Chubbyphp\Framework\Router\RouterException;
@@ -52,7 +53,11 @@ final class UrlGeneratorTest extends TestCase
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
 
-        $router = new UrlGenerator(new Routes([$route]));
+        $cache = new MemoryCache();
+
+        $serializedCache = serialize($cache);
+
+        $router = new UrlGenerator(new Routes([$route]), $cache);
 
         self::assertSame(
             'https://user:password@localhost/user/1',
@@ -75,6 +80,8 @@ final class UrlGeneratorTest extends TestCase
                 ['key1' => 'value1', 'key2' => 'value2']
             )
         );
+
+        self::assertNotSame($serializedCache, serialize($cache));
     }
 
     public function testGenerateUriWithMissingAttribute(): void

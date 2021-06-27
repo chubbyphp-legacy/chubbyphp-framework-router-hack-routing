@@ -10,11 +10,9 @@ final class ApcuCache implements CacheInterface
 {
     public function get(string $item, callable $callback): PatternNode
     {
-        $success = false;
+        $result = apcu_fetch($item);
 
-        $result = apcu_fetch($item, $success);
-
-        if ($success && false !== $result) {
+        if (false !== $result) {
             return $result;
         }
 

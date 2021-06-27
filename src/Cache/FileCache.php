@@ -10,9 +10,6 @@ final class FileCache implements CacheInterface
 {
     private string $directory;
 
-    /**
-     * @param string $directory
-     */
     public function __construct(?string $directory = null)
     {
         $this->directory = $directory ?? sys_get_temp_dir();
@@ -20,7 +17,7 @@ final class FileCache implements CacheInterface
 
     public function get(string $item, callable $callback): PatternNode
     {
-        $file = $this->directory.'/'.md5($item).'/pattern-node.php';
+        $file = $this->directory.'/'.md5($item).'-pattern-node.php';
 
         if (is_file($file)) {
             return require $file;

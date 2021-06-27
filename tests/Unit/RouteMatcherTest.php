@@ -10,6 +10,7 @@ use Chubbyphp\Framework\Router\RouterException;
 use Chubbyphp\Framework\Router\Routes;
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
+use HackRouting\Cache\MemoryCache;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,9 +51,15 @@ final class RouteMatcherTest extends TestCase
             Call::create('getUri')->with()->willReturn($uri),
         ]);
 
-        $routeMatcher = new RouteMatcher(new Routes([$route1, $route2]));
+        $cache = new MemoryCache();
+
+        $serialzedCache = serialize($cache);
+
+        $routeMatcher = new RouteMatcher(new Routes([$route1, $route2]), $cache);
 
         self::assertSame($route2->getName(), $routeMatcher->match($request)->getName());
+
+        self::assertNotSame($serialzedCache, serialize($cache));
     }
 
     public function testMatchNotFound(): void
