@@ -7,14 +7,15 @@ namespace Chubbyphp\Framework\Router\HackRouting;
 use Chubbyphp\Framework\Router\Exceptions\MissingAttributeForPathGenerationException;
 use Chubbyphp\Framework\Router\Exceptions\MissingRouteByNameException;
 use Chubbyphp\Framework\Router\Exceptions\NotMatchingValueForPathGenerationException;
-use Chubbyphp\Framework\Router\HackRouting\RouteParser\RouteParser;
-use Chubbyphp\Framework\Router\HackRouting\RouteParser\RouteParserInterface;
+use Chubbyphp\Framework\Router\HackRouting\Cache\CacheInterface;
+use Chubbyphp\Framework\Router\HackRouting\Cache\NullCache;
 use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\RoutesInterface;
 use Chubbyphp\Framework\Router\UrlGeneratorInterface;
 use HackRouting\PatternParser\LiteralNode;
 use HackRouting\PatternParser\OptionalNode;
 use HackRouting\PatternParser\ParameterNode;
+use HackRouting\PatternParser\Parser;
 use HackRouting\PatternParser\PatternNode;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -25,14 +26,14 @@ final class UrlGenerator implements UrlGeneratorInterface
      */
     private array $routesByName;
 
-    private RouteParserInterface $routeParser;
+    private CacheInterface $cache;
 
     private string $basePath;
 
-    public function __construct(RoutesInterface $routes, ?RouteParserInterface $routeParser = null, string $basePath = '')
+    public function __construct(RoutesInterface $routes, ?CacheInterface $cache = null, string $basePath = '')
     {
         $this->routesByName = $routes->getRoutesByName();
-        $this->routeParser = $routeParser ?? new RouteParser();
+        $this->cache = $cache ?? new NullCache();
         $this->basePath = $basePath;
     }
 
@@ -73,7 +74,7 @@ final class UrlGenerator implements UrlGeneratorInterface
             throw MissingRouteByNameException::create($name);
         }
 
-        return $this->routeParser->parse($this->routesByName[$name]);
+        return $this->cache->get($name, fn () => Parser::parse($this->routesByName[$name]->getPath()));
     }
 
     /**
