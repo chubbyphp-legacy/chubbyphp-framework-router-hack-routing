@@ -51,7 +51,7 @@ final class UrlGeneratorTest extends TestCase
         /** @var RequestHandlerInterface|MockObject $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
-        $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
+        $route = Route::get('/user/{id:\d+}[/{name}]/view', 'user', $requestHandler);
 
         $cache = new MemoryCache();
 
@@ -60,23 +60,23 @@ final class UrlGeneratorTest extends TestCase
         $router = new UrlGenerator(new Routes([$route]), $cache);
 
         self::assertSame(
-            'https://user:password@localhost/user/1',
+            'https://user:password@localhost/user/1/view',
             $router->generateUrl($request, 'user', ['id' => 1])
         );
         self::assertSame(
-            'https://user:password@localhost/user/1?key=value',
+            'https://user:password@localhost/user/1/view?key=value',
             $router->generateUrl($request, 'user', ['id' => 1], ['key' => 'value'])
         );
         self::assertSame(
-            'https://user:password@localhost/user/1/sample',
-            $router->generateUrl($request, 'user', ['id' => 1, 'name' => 'sample'])
+            'https://user:password@localhost/user/1/test/view',
+            $router->generateUrl($request, 'user', ['id' => 1, 'name' => 'test'])
         );
         self::assertSame(
-            'https://user:password@localhost/user/1/sample?key1=value1&key2=value2',
+            'https://user:password@localhost/user/1/test/view?key1=value1&key2=value2',
             $router->generateUrl(
                 $request,
                 'user',
-                ['id' => 1, 'name' => 'sample'],
+                ['id' => 1, 'name' => 'test'],
                 ['key1' => 'value1', 'key2' => 'value2']
             )
         );

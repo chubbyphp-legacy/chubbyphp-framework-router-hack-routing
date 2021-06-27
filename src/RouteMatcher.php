@@ -23,8 +23,14 @@ final class RouteMatcher implements RouteMatcherInterface
      */
     private array $routesByName;
 
+    /**
+     * @var Router<string>
+     */
     private Router $router;
 
+    /**
+     * @param CacheInterface<string> $cache
+     */
     public function __construct(RoutesInterface $routes, ?CacheInterface $cache = null)
     {
         $this->routesByName = $routes->getRoutesByName();
@@ -54,6 +60,11 @@ final class RouteMatcher implements RouteMatcherInterface
         }
     }
 
+    /**
+     * @param CacheInterface<string> $cache
+     *
+     * @return Router<string>
+     */
     private function getRouter(RoutesInterface $routes, CacheInterface $cache): Router
     {
         $router = new Router($cache);

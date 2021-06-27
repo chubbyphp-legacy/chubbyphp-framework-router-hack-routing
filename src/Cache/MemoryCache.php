@@ -8,6 +8,9 @@ use HackRouting\PatternParser\PatternNode;
 
 final class MemoryCache implements CacheInterface
 {
+    /**
+     * @var array<string, PatternNode>
+     */
     private array $cache = [];
 
     public function get(string $item, callable $callback): PatternNode
