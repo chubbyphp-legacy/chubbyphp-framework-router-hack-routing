@@ -1,2 +1,5 @@
 parameters:
-    ignoreErrors: []
+    ignoreErrors:
+        -
+            message: '#expects non-empty-string, string given#'
+            path: %currentWorkingDirectory%/**/*.php
