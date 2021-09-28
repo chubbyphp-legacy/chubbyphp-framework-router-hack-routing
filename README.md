@@ -28,6 +28,7 @@ Hack routing implementation for [chubbyphp-framework][1].
  * php: ^7.4|^8.0
  * [chubbyphp/chubbyphp-framework][1]: ^3.5
  * [azjezz/hack-routing][2]: dev-main@dev
+ * [psr/http-message][3]: ^1.0.1
 
 ## Installation
 
@@ -85,4 +86,5 @@ Dominik Zogg 2021
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-framework
 [2]: https://packagist.org/packages/azjezz/hack-routing
+[3]: https://packagist.org/packages/psr/http-message
 [10]: https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-hack-routing

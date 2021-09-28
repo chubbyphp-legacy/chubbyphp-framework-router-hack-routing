@@ -16,7 +16,8 @@
     "require": {
         "php": "^8.0",
         "chubbyphp/chubbyphp-framework": "^3.5",
-        "azjezz/hack-routing": "dev-main@dev"
+        "azjezz/hack-routing": "dev-main@dev",
+        "psr/http-message": "^1.0.1"
     },
     "require-dev": {
         "bittyphp/http": "^2.0",
