@@ -65,7 +65,7 @@ final class UrlGenerator implements UrlGeneratorInterface
             return $this->basePath.$path;
         }
 
-        return $this->basePath.$path.'?'.\http_build_query($queryParams);
+        return $this->basePath.$path.'?'.http_build_query($queryParams);
     }
 
     private function getParsedRouteByName(string $name): PatternNode
@@ -116,7 +116,7 @@ final class UrlGenerator implements UrlGeneratorInterface
 
         $pattern = '!^'.$regexp.'$!';
 
-        if (null !== $regexp && 1 !== \preg_match($pattern, $value)) {
+        if (null !== $regexp && 1 !== preg_match($pattern, $value)) {
             throw NotMatchingValueForPathGenerationException::create(
                 $name,
                 $attribute,

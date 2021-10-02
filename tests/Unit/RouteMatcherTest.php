@@ -26,16 +26,16 @@ final class RouteMatcherTest extends TestCase
 {
     use MockByCallsTrait;
 
-    const UUID_PATTERN = '[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}';
+    public const UUID_PATTERN = '[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}';
 
     public function testMatchFound(): void
     {
-        /** @var RequestHandlerInterface|MockObject $requestHandler1 */
+        /** @var MockObject|RequestHandlerInterface $requestHandler1 */
         $requestHandler1 = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route1 = Route::post('/api/pets', 'pet_create', $requestHandler1);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler2 */
+        /** @var MockObject|RequestHandlerInterface $requestHandler2 */
         $requestHandler2 = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route2 = Route::get('/api/pets', 'pet_list', $requestHandler2);
@@ -83,7 +83,7 @@ final class RouteMatcherTest extends TestCase
             Call::create('getRequestTarget')->with()->willReturn('/'),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/api/pets', 'pet_list', $requestHandler);
@@ -112,7 +112,7 @@ final class RouteMatcherTest extends TestCase
             Call::create('getRequestTarget')->with()->willReturn('/api/pets?offset=1&limit=20'),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/api/pets', 'pet_list', $requestHandler);
@@ -142,7 +142,7 @@ final class RouteMatcherTest extends TestCase
             Call::create('getRequestTarget')->with()->willReturn('/api/pets/1'),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/api/pets/{id:'.self::UUID_PATTERN.'}', 'pet_read', $requestHandler);
@@ -164,7 +164,7 @@ final class RouteMatcherTest extends TestCase
             Call::create('getUri')->with()->willReturn($uri),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/api/pets/{id:'.self::UUID_PATTERN.'}', 'pet_read', $requestHandler);

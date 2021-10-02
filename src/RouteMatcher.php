@@ -40,7 +40,7 @@ final class RouteMatcher implements RouteMatcherInterface
     public function match(ServerRequestInterface $request): RouteInterface
     {
         $method = $request->getMethod();
-        $path = \rawurldecode($request->getUri()->getPath());
+        $path = rawurldecode($request->getUri()->getPath());
 
         try {
             [$name, $attributes] = $this->router->match($method, $path);

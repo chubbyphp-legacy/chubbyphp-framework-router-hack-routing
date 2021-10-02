@@ -48,7 +48,7 @@ final class UrlGeneratorTest extends TestCase
             Call::create('getUri')->with()->willReturn($uri),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/user/{id:\d+}[/{name}]/view', 'user', $requestHandler);
@@ -98,7 +98,7 @@ final class UrlGeneratorTest extends TestCase
             Call::create('getUri')->with()->willReturn($uri),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
@@ -124,7 +124,7 @@ final class UrlGeneratorTest extends TestCase
             Call::create('getUri')->with()->willReturn($uri),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
@@ -155,7 +155,7 @@ final class UrlGeneratorTest extends TestCase
             Call::create('getUri')->with()->willReturn($uri),
         ]);
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
@@ -197,7 +197,7 @@ final class UrlGeneratorTest extends TestCase
 
     public function testGeneratePath(): void
     {
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
@@ -222,7 +222,7 @@ final class UrlGeneratorTest extends TestCase
         $this->expectException(RouterException::class);
         $this->expectExceptionMessage('Missing attribute "id" while path generation for route: "user"');
 
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
@@ -233,7 +233,7 @@ final class UrlGeneratorTest extends TestCase
 
     public function testGeneratePathWithBasePath(): void
     {
-        /** @var RequestHandlerInterface|MockObject $requestHandler */
+        /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
