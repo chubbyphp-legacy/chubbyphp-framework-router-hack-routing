@@ -26,7 +26,7 @@ Hack routing implementation for [chubbyphp-framework][1].
 ## Requirements
 
  * php: ^7.4|^8.0
- * [chubbyphp/chubbyphp-framework][1]: ^3.5|^4.0@dev
+ * [chubbyphp/chubbyphp-framework][1]: ^3.6.2|^4.0@dev
  * [azjezz/hack-routing][2]: dev-main@dev
  * [psr/http-message][3]: ^1.0.1
 
