@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Framework\Router\HackRouting\Unit;
 
+use Chubbyphp\Framework\Router\Exceptions\MethodNotAllowedException;
+use Chubbyphp\Framework\Router\Exceptions\NotFoundException;
 use Chubbyphp\Framework\Router\HackRouting\RouteMatcher;
 use Chubbyphp\Framework\Router\Route;
-use Chubbyphp\Framework\Router\RouterException;
 use Chubbyphp\Framework\Router\Routes;
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
@@ -64,7 +65,7 @@ final class RouteMatcherTest extends TestCase
 
     public function testMatchNotFound(): void
     {
-        $this->expectException(RouterException::class);
+        $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage(
             'The page "/" you are looking for could not be found.'
                 .' Check the address bar to ensure your URL is spelled correctly.'
@@ -94,7 +95,7 @@ final class RouteMatcherTest extends TestCase
 
     public function testMatchMethodNotAllowed(): void
     {
-        $this->expectException(RouterException::class);
+        $this->expectException(MethodNotAllowedException::class);
         $this->expectExceptionMessage(
             'Method "POST" at path "/api/pets?offset=1&limit=20" is not allowed. Must be one of: "GET"'
         );
@@ -123,7 +124,7 @@ final class RouteMatcherTest extends TestCase
 
     public function testMatchWithTokensNotMatch(): void
     {
-        $this->expectException(RouterException::class);
+        $this->expectException(NotFoundException::class);
         $this->expectExceptionMessage(
             'The page "/api/pets/1" you are looking for could not be found.'
                 .' Check the address bar to ensure your URL is spelled correctly.'
