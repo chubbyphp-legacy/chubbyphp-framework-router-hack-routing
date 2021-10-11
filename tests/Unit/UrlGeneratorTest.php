@@ -111,9 +111,7 @@ final class UrlGeneratorTest extends TestCase
     public function testGenerateUriWithNotMatchingAttribute(): void
     {
         $this->expectException(RouteGenerationException::class);
-        $this->expectExceptionMessage(
-            'Route generation for route "user" with path "/user/" with attributes "{"id":"a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791"}" failed. Not matching value "a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791" with pattern "\d+" on attribute "id"'
-        );
+        $this->expectExceptionMessage('Route generation for route "user" with path "/" with attributes "{"id":"1","name":"5"}" failed. Not matching value "5" with pattern "a-z" on attribute "name"');
         $this->expectExceptionCode(3);
 
         /** @var MockObject|UriInterface $uri */
@@ -127,10 +125,10 @@ final class UrlGeneratorTest extends TestCase
         /** @var MockObject|RequestHandlerInterface $requestHandler */
         $requestHandler = $this->getMockByCalls(RequestHandlerInterface::class);
 
-        $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
+        $route = Route::get('/user/{id:\d+}[/{name:a-z}]', 'user', $requestHandler);
 
         $router = new UrlGenerator(new Routes([$route]));
-        $router->generateUrl($request, 'user', ['id' => 'a3bce0ca-2b7c-4fc6-8dad-ecdcc6907791']);
+        $router->generateUrl($request, 'user', ['id' => '1', 'name' => '5']);
     }
 
     public function testGenerateUriWithBasePath(): void

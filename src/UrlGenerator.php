@@ -99,7 +99,8 @@ final class UrlGenerator implements UrlGeneratorInterface
                 try {
                     $path .= $this->pathFromNodes($childNode->getPattern(), $name, $path, $attributes);
                 } catch (RouteGenerationException $e) {
-                    if (false === strpos($e->getMessage(), 'Missing attribute')) {
+                    $previous = $e->getPrevious();
+                    if (null === $previous || 3 !== $previous->getCode()) {
                         throw $e;
                     }
                 }
@@ -121,7 +122,7 @@ final class UrlGenerator implements UrlGeneratorInterface
                 $name,
                 $path,
                 $attributes,
-                new \RuntimeException(sprintf('Missing attribute "%s"', $attribute))
+                new \RuntimeException(sprintf('Missing attribute "%s"', $attribute), 3)
             );
         }
 
@@ -141,7 +142,7 @@ final class UrlGenerator implements UrlGeneratorInterface
                     $value,
                     $regexp,
                     $attribute
-                ))
+                ), 4)
             );
         }
 
