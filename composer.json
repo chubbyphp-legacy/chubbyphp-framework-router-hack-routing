@@ -15,8 +15,8 @@
     ],
     "require": {
         "php": "^8.0",
-        "chubbyphp/chubbyphp-framework": "^3.6.2|^4.0@dev",
         "azjezz/hack-routing": "dev-main@dev",
+        "chubbyphp/chubbyphp-framework": "^4.0",
         "psr/http-message": "^1.0.1"
     },
     "require-dev": {
@@ -25,14 +25,14 @@
         "chubbyphp/chubbyphp-mock": "^1.6.1",
         "guzzlehttp/psr7": "^1.4.2",
         "http-interop/http-factory-guzzle": "^1.0",
-        "infection/infection": "^0.25.3",
+        "infection/infection": "^0.26.5",
         "laminas/laminas-diactoros": "^2.0",
         "nyholm/psr7": "^1.0",
-        "php-coveralls/php-coveralls": "^2.5.1",
+        "php-coveralls/php-coveralls": "^2.5.2",
         "phploc/phploc": "^7.0.2",
         "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan": "^1.1.2",
-        "phpunit/phpunit": "^9.5.10",
+        "phpstan/phpstan": "^1.4.6",
+        "phpunit/phpunit": "^9.5.16",
         "slim/psr7": "^0.5|^1.0",
         "sunrise/http-factory": "^1.0.4"
     },
@@ -43,11 +43,15 @@
         "psr-4": { "Chubbyphp\\Tests\\Framework\\Router\\HackRouting\\": "tests/" }
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "phpstan/extension-installer": true,
+            "infection/extension-installer": true
+        }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "1.1-dev"
         }
     },
     "scripts": {
@@ -62,7 +66,7 @@
             "@test:cs"
         ],
         "test:cs": "mkdir -p build && PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --cache-file=build/phpcs.cache",
-        "test:infection": "vendor/bin/infection --threads=$(nproc) --min-msi=88 --verbose --coverage=build/phpunit",
+        "test:infection": "vendor/bin/infection --threads=$(nproc) --min-msi=86 --verbose --coverage=build/phpunit",
         "test:integration": "vendor/bin/phpunit --testsuite=Integration --cache-result-file=build/phpunit/result.cache",
         "test:lint": "mkdir -p build && find src tests -name '*.php' -print0 | xargs -0 -n1 -P$(nproc) php -l | tee build/phplint.log",
         "test:loc": "mkdir -p build && vendor/bin/phploc src --verbose | tee build/phploc.log",

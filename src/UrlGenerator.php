@@ -27,13 +27,10 @@ final class UrlGenerator implements UrlGeneratorInterface
 
     private CacheInterface $cache;
 
-    private string $basePath;
-
-    public function __construct(RoutesInterface $routes, ?CacheInterface $cache = null, string $basePath = '')
+    public function __construct(RoutesInterface $routes, ?CacheInterface $cache = null, private string $basePath = '')
     {
         $this->routesByName = $routes->getRoutesByName();
         $this->cache = $cache ?? new NullCache();
-        $this->basePath = $basePath;
     }
 
     /**
@@ -100,7 +97,7 @@ final class UrlGenerator implements UrlGeneratorInterface
                     $path .= $this->pathFromNodes($childNode->getPattern(), $name, $path, $attributes);
                 } catch (RouteGenerationException $e) {
                     $previous = $e->getPrevious();
-                    if (null === $previous || 3 !== $previous->getCode()) {
+                    if (!$previous instanceof \Throwable || 3 !== $previous->getCode()) {
                         throw $e;
                     }
                 }
