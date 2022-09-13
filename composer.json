@@ -37,10 +37,14 @@
         "sunrise/http-factory": "^1.0.4"
     },
     "autoload": {
-        "psr-4": { "Chubbyphp\\Framework\\Router\\HackRouting\\": "src/" }
+        "psr-4": {
+            "Chubbyphp\\Framework\\Router\\HackRouting\\": "src/"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Chubbyphp\\Tests\\Framework\\Router\\HackRouting\\": "tests/" }
+        "psr-4": {
+            "Chubbyphp\\Tests\\Framework\\Router\\HackRouting\\": "tests/"
+        }
     },
     "config": {
         "sort-packages": true,
@@ -66,7 +70,7 @@
             "@test:cs"
         ],
         "test:cs": "mkdir -p build && PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --cache-file=build/phpcs.cache",
-        "test:infection": "vendor/bin/infection --threads=$(nproc) --min-msi=86 --verbose --coverage=build/phpunit",
+        "test:infection": "vendor/bin/infection --threads=$(nproc) --min-msi=84 --verbose --coverage=build/phpunit",
         "test:integration": "vendor/bin/phpunit --testsuite=Integration --cache-result-file=build/phpunit/result.cache",
         "test:lint": "mkdir -p build && find src tests -name '*.php' -print0 | xargs -0 -n1 -P$(nproc) php -l | tee build/phplint.log",
         "test:loc": "mkdir -p build && vendor/bin/phploc src | tee build/phploc.log",
