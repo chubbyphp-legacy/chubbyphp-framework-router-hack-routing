@@ -26,16 +26,17 @@ Hack routing implementation for [chubbyphp-framework][1].
 ## Requirements
 
  * php: ^8.0
- * [chubbyphp/chubbyphp-framework][1]: ^4.0
- * [azjezz/hack-routing][2]: dev-main@dev
- * [psr/http-message][3]: ^1.0.1
+ * [chubbyphp/chubbyphp-framework][1]: ^5.0.3
+ * [chubbyphp/chubbyphp-http-exception][2]: ^1.0.1
+ * [azjezz/hack-routing][3]: dev-main@dev
+ * [psr/http-message][4]: ^1.0.1
 
 ## Installation
 
 Through [Composer](http://getcomposer.org) as [chubbyphp/chubbyphp-framework-router-hack-routing][10].
 
 ```bash
-composer require chubbyphp/chubbyphp-framework-router-hack-routing "^1.1"
+composer require chubbyphp/chubbyphp-framework-router-hack-routing "^1.0"
 ```
 
 ## Usage
@@ -74,7 +75,7 @@ $app = new Application([
                 return $response;
             }
         ))
-    ])), $responseFactory),
+    ]))),
 ]);
 
 $app->emit($app->handle((new ServerRequestFactory())->createFromGlobals()));
@@ -85,6 +86,7 @@ $app->emit($app->handle((new ServerRequestFactory())->createFromGlobals()));
 Dominik Zogg 2022
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-framework
-[2]: https://packagist.org/packages/azjezz/hack-routing
-[3]: https://packagist.org/packages/psr/http-message
+[2]: https://packagist.org/packages/chubbyphp/chubbyphp-http-exception
+[3]: https://packagist.org/packages/azjezz/hack-routing
+[4]: https://packagist.org/packages/psr/http-message
 [10]: https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-hack-routing

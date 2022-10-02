@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Framework\Router\HackRouting;
 
-use Chubbyphp\Framework\Router\Exceptions\MethodNotAllowedException;
-use Chubbyphp\Framework\Router\Exceptions\NotFoundException;
 use Chubbyphp\Framework\Router\RouteInterface;
 use Chubbyphp\Framework\Router\RouteMatcherInterface;
-use Chubbyphp\Framework\Router\RoutesInterface;
+use Chubbyphp\Framework\Router\RoutesByNameInterface;
+use Chubbyphp\HttpException\HttpException;
 use HackRouting\Cache\CacheInterface;
 use HackRouting\Cache\NullCache;
 use HackRouting\HttpException\MethodNotAllowedException as HackMethodNotAllowedException;
@@ -31,10 +30,17 @@ final class RouteMatcher implements RouteMatcherInterface
     /**
      * @param CacheInterface<string> $cache
      */
-    public function __construct(RoutesInterface $routes, ?CacheInterface $cache = null)
+    public function __construct(RoutesByNameInterface $routes, ?CacheInterface $cache = null)
     {
         $this->routesByName = $routes->getRoutesByName();
-        $this->router = $this->getRouter($routes, $cache ?? new NullCache());
+
+        $router = new Router($cache ?? new NullCache());
+
+        foreach ($this->routesByName as $route) {
+            $router->addRoute($route->getMethod(), $route->getPath(), $route->getName());
+        }
+
+        $this->router = $router;
     }
 
     public function match(ServerRequestInterface $request): RouteInterface
@@ -50,29 +56,22 @@ final class RouteMatcher implements RouteMatcherInterface
 
             return $route->withAttributes($attributes);
         } catch (HackMethodNotAllowedException $e) {
-            throw MethodNotAllowedException::create(
-                $request->getRequestTarget(),
-                $method,
-                $e->getAllowedMethods()
-            );
+            throw HttpException::createMethodNotAllowed([
+                'detail' => sprintf(
+                    'Method "%s" at path "%s" is not allowed. Must be one of: "%s"',
+                    $request->getMethod(),
+                    $request->getRequestTarget(),
+                    implode('", "', $e->getAllowedMethods()),
+                ),
+            ]);
         } catch (HackNotFoundException) {
-            throw NotFoundException::create($request->getRequestTarget());
+            throw HttpException::createNotFound([
+                'detail' => sprintf(
+                    'The page "%s" you are looking for could not be found.'
+                    .' Check the address bar to ensure your URL is spelled correctly.',
+                    $request->getRequestTarget()
+                ),
+            ]);
         }
-    }
-
-    /**
-     * @param CacheInterface<string> $cache
-     *
-     * @return Router<string>
-     */
-    private function getRouter(RoutesInterface $routes, CacheInterface $cache): Router
-    {
-        $router = new Router($cache);
-
-        foreach ($routes->getRoutesByName() as $route) {
-            $router->addRoute($route->getMethod(), $route->getPath(), $route->getName());
-        }
-
-        return $router;
     }
 }

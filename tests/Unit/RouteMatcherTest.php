@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Chubbyphp\Tests\Framework\Router\HackRouting\Unit;
 
-use Chubbyphp\Framework\Router\Exceptions\MethodNotAllowedException;
-use Chubbyphp\Framework\Router\Exceptions\NotFoundException;
 use Chubbyphp\Framework\Router\HackRouting\RouteMatcher;
 use Chubbyphp\Framework\Router\Route;
-use Chubbyphp\Framework\Router\Routes;
+use Chubbyphp\Framework\Router\RoutesByName;
+use Chubbyphp\HttpException\HttpException;
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
 use HackRouting\Cache\MemoryCache;
@@ -56,7 +55,7 @@ final class RouteMatcherTest extends TestCase
 
         $serialzedCache = serialize($cache);
 
-        $routeMatcher = new RouteMatcher(new Routes([$route1, $route2]), $cache);
+        $routeMatcher = new RouteMatcher(new RoutesByName([$route1, $route2]), $cache);
 
         self::assertSame($route2->getName(), $routeMatcher->match($request)->getName());
 
@@ -65,13 +64,6 @@ final class RouteMatcherTest extends TestCase
 
     public function testMatchNotFound(): void
     {
-        $this->expectException(NotFoundException::class);
-        $this->expectExceptionMessage(
-            'The page "/" you are looking for could not be found.'
-                .' Check the address bar to ensure your URL is spelled correctly.'
-        );
-        $this->expectExceptionCode(404);
-
         /** @var MockObject|UriInterface $uri */
         $uri = $this->getMockByCalls(UriInterface::class, [
             Call::create('getPath')->with()->willReturn('/'),
@@ -89,18 +81,26 @@ final class RouteMatcherTest extends TestCase
 
         $route = Route::get('/api/pets', 'pet_list', $requestHandler);
 
-        $routeMatcher = new RouteMatcher(new Routes([$route]));
-        $routeMatcher->match($request);
+        $routeMatcher = new RouteMatcher(new RoutesByName([$route]));
+
+        try {
+            $routeMatcher->match($request);
+            self::fail('Excepted exception');
+        } catch (HttpException $e) {
+            self::assertSame('Not Found', $e->getTitle());
+            self::assertSame(404, $e->getStatus());
+            self::assertSame([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.5',
+                'status' => 404,
+                'title' => 'Not Found',
+                'detail' => 'The page "/" you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly.',
+                'instance' => null,
+            ], $e->jsonSerialize());
+        }
     }
 
     public function testMatchMethodNotAllowed(): void
     {
-        $this->expectException(MethodNotAllowedException::class);
-        $this->expectExceptionMessage(
-            'Method "POST" at path "/api/pets?offset=1&limit=20" is not allowed. Must be one of: "GET"'
-        );
-        $this->expectExceptionCode(405);
-
         /** @var MockObject|UriInterface $uri */
         $uri = $this->getMockByCalls(UriInterface::class, [
             Call::create('getPath')->with()->willReturn('/api/pets'),
@@ -110,6 +110,7 @@ final class RouteMatcherTest extends TestCase
         $request = $this->getMockByCalls(ServerRequestInterface::class, [
             Call::create('getMethod')->with()->willReturn('POST'),
             Call::create('getUri')->with()->willReturn($uri),
+            Call::create('getMethod')->with()->willReturn('POST'),
             Call::create('getRequestTarget')->with()->willReturn('/api/pets?offset=1&limit=20'),
         ]);
 
@@ -118,19 +119,26 @@ final class RouteMatcherTest extends TestCase
 
         $route = Route::get('/api/pets', 'pet_list', $requestHandler);
 
-        $routeMatcher = new RouteMatcher(new Routes([$route]));
-        $routeMatcher->match($request);
+        $routeMatcher = new RouteMatcher(new RoutesByName([$route]));
+
+        try {
+            $routeMatcher->match($request);
+            self::fail('Excepted exception');
+        } catch (HttpException $e) {
+            self::assertSame('Method Not Allowed', $e->getTitle());
+            self::assertSame(405, $e->getStatus());
+            self::assertSame([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.6',
+                'status' => 405,
+                'title' => 'Method Not Allowed',
+                'detail' => 'Method "POST" at path "/api/pets?offset=1&limit=20" is not allowed. Must be one of: "GET"',
+                'instance' => null,
+            ], $e->jsonSerialize());
+        }
     }
 
     public function testMatchWithTokensNotMatch(): void
     {
-        $this->expectException(NotFoundException::class);
-        $this->expectExceptionMessage(
-            'The page "/api/pets/1" you are looking for could not be found.'
-                .' Check the address bar to ensure your URL is spelled correctly.'
-        );
-        $this->expectExceptionCode(404);
-
         /** @var MockObject|UriInterface $uri */
         $uri = $this->getMockByCalls(UriInterface::class, [
             Call::create('getPath')->with()->willReturn('/api/pets/1'),
@@ -148,8 +156,22 @@ final class RouteMatcherTest extends TestCase
 
         $route = Route::get('/api/pets/{id:'.self::UUID_PATTERN.'}', 'pet_read', $requestHandler);
 
-        $routeMatcher = new RouteMatcher(new Routes([$route]));
-        $routeMatcher->match($request);
+        $routeMatcher = new RouteMatcher(new RoutesByName([$route]));
+
+        try {
+            $routeMatcher->match($request);
+            self::fail('Excepted exception');
+        } catch (HttpException $e) {
+            self::assertSame('Not Found', $e->getTitle());
+            self::assertSame(404, $e->getStatus());
+            self::assertSame([
+                'type' => 'https://datatracker.ietf.org/doc/html/rfc2616#section-10.4.5',
+                'status' => 404,
+                'title' => 'Not Found',
+                'detail' => 'The page "/api/pets/1" you are looking for could not be found. Check the address bar to ensure your URL is spelled correctly.',
+                'instance' => null,
+            ], $e->jsonSerialize());
+        }
     }
 
     public function testMatchWithTokensMatch(): void
@@ -170,7 +192,7 @@ final class RouteMatcherTest extends TestCase
 
         $route = Route::get('/api/pets/{id:'.self::UUID_PATTERN.'}', 'pet_read', $requestHandler);
 
-        $routeMatcher = new RouteMatcher(new Routes([$route]));
+        $routeMatcher = new RouteMatcher(new RoutesByName([$route]));
 
         self::assertSame($route->getName(), $routeMatcher->match($request)->getName());
     }

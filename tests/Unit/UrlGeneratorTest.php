@@ -9,7 +9,7 @@ use Chubbyphp\Framework\Router\Exceptions\RouteGenerationException;
 use Chubbyphp\Framework\Router\HackRouting\Cache\MemoryCache;
 use Chubbyphp\Framework\Router\HackRouting\UrlGenerator;
 use Chubbyphp\Framework\Router\Route;
-use Chubbyphp\Framework\Router\Routes;
+use Chubbyphp\Framework\Router\RoutesByName;
 use Chubbyphp\Mock\Call;
 use Chubbyphp\Mock\MockByCallsTrait;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -58,7 +58,7 @@ final class UrlGeneratorTest extends TestCase
 
         $serializedCache = serialize($cache);
 
-        $router = new UrlGenerator(new Routes([$route]), $cache);
+        $router = new UrlGenerator(new RoutesByName([$route]), $cache);
 
         self::assertSame(
             'https://user:password@localhost/user/1/view',
@@ -104,7 +104,7 @@ final class UrlGeneratorTest extends TestCase
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
 
-        $router = new UrlGenerator(new Routes([$route]));
+        $router = new UrlGenerator(new RoutesByName([$route]));
         $router->generateUrl($request, 'user');
     }
 
@@ -127,7 +127,7 @@ final class UrlGeneratorTest extends TestCase
 
         $route = Route::get('/user/{id:\d+}[/{name:a-z}]', 'user', $requestHandler);
 
-        $router = new UrlGenerator(new Routes([$route]));
+        $router = new UrlGenerator(new RoutesByName([$route]));
         $router->generateUrl($request, 'user', ['id' => '1', 'name' => '5']);
     }
 
@@ -158,7 +158,7 @@ final class UrlGeneratorTest extends TestCase
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
 
-        $router = new UrlGenerator(new Routes([$route]), null, '/path/to/directory');
+        $router = new UrlGenerator(new RoutesByName([$route]), null, '/path/to/directory');
 
         self::assertSame(
             'https://user:password@localhost/path/to/directory/user/1',
@@ -188,7 +188,7 @@ final class UrlGeneratorTest extends TestCase
         $this->expectException(MissingRouteByNameException::class);
         $this->expectExceptionMessage('Missing route: "user"');
 
-        $router = new UrlGenerator(new Routes([]));
+        $router = new UrlGenerator(new RoutesByName([]));
         $router->generatePath('user', ['id' => 1]);
     }
 
@@ -199,7 +199,7 @@ final class UrlGeneratorTest extends TestCase
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
 
-        $router = new UrlGenerator(new Routes([$route]));
+        $router = new UrlGenerator(new RoutesByName([$route]));
 
         self::assertSame('/user/1', $router->generatePath('user', ['id' => 1]));
         self::assertSame('/user/1?key=value', $router->generatePath('user', ['id' => 1], ['key' => 'value']));
@@ -224,7 +224,7 @@ final class UrlGeneratorTest extends TestCase
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
 
-        $router = new UrlGenerator(new Routes([$route]));
+        $router = new UrlGenerator(new RoutesByName([$route]));
         $router->generatePath('user');
     }
 
@@ -235,7 +235,7 @@ final class UrlGeneratorTest extends TestCase
 
         $route = Route::get('/user/{id:\d+}[/{name}]', 'user', $requestHandler);
 
-        $router = new UrlGenerator(new Routes([$route]), null, '/path/to/directory');
+        $router = new UrlGenerator(new RoutesByName([$route]), null, '/path/to/directory');
 
         self::assertSame('/path/to/directory/user/1', $router->generatePath('user', ['id' => 1]));
         self::assertSame(

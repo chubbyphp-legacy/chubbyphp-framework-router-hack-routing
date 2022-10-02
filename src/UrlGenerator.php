@@ -9,7 +9,7 @@ use Chubbyphp\Framework\Router\Exceptions\RouteGenerationException;
 use Chubbyphp\Framework\Router\HackRouting\Cache\CacheInterface;
 use Chubbyphp\Framework\Router\HackRouting\Cache\NullCache;
 use Chubbyphp\Framework\Router\RouteInterface;
-use Chubbyphp\Framework\Router\RoutesInterface;
+use Chubbyphp\Framework\Router\RoutesByNameInterface;
 use Chubbyphp\Framework\Router\UrlGeneratorInterface;
 use HackRouting\PatternParser\LiteralNode;
 use HackRouting\PatternParser\OptionalNode;
@@ -27,7 +27,7 @@ final class UrlGenerator implements UrlGeneratorInterface
 
     private CacheInterface $cache;
 
-    public function __construct(RoutesInterface $routes, ?CacheInterface $cache = null, private string $basePath = '')
+    public function __construct(RoutesByNameInterface $routes, ?CacheInterface $cache = null, private string $basePath = '')
     {
         $this->routesByName = $routes->getRoutesByName();
         $this->cache = $cache ?? new NullCache();
