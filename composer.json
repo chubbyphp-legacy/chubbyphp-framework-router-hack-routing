@@ -24,18 +24,12 @@
         "bittyphp/http": "^2.0",
         "chubbyphp/chubbyphp-dev-helper": "dev-master",
         "chubbyphp/chubbyphp-mock": "^1.6.1",
-        "guzzlehttp/psr7": "^1.4.2",
-        "http-interop/http-factory-guzzle": "^1.0",
         "infection/infection": "^0.26.5",
-        "laminas/laminas-diactoros": "^2.0",
-        "nyholm/psr7": "^1.0",
         "php-coveralls/php-coveralls": "^2.5.2",
         "phploc/phploc": "^7.0.2",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.4.6",
-        "phpunit/phpunit": "^9.5.16",
-        "slim/psr7": "^0.5|^1.0",
-        "sunrise/http-factory": "^1.0.4"
+        "phpunit/phpunit": "^9.5.16"
     },
     "autoload": {
         "psr-4": {
