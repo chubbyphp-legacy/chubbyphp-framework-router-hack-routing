@@ -83,7 +83,7 @@ $app->emit($app->handle((new ServerRequestFactory())->createFromGlobals()));
 
 ## Copyright
 
-Dominik Zogg 2022
+2023 Dominik Zogg
 
 [1]: https://packagist.org/packages/chubbyphp/chubbyphp-framework
 [2]: https://packagist.org/packages/chubbyphp/chubbyphp-http-exception
