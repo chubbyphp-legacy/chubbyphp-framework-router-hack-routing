@@ -23,6 +23,8 @@
 
 Hack routing implementation for [chubbyphp-framework][1].
 
+DEPRECATED: I suggest to use [chubbyphp-framework-router-fastroute][11].
+
 ## Requirements
 
  * php: ^8.0
@@ -90,3 +92,5 @@ $app->emit($app->handle((new ServerRequestFactory())->createFromGlobals()));
 [3]: https://packagist.org/packages/azjezz/hack-routing
 [4]: https://packagist.org/packages/psr/http-message
 [10]: https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-hack-routing
+[11]: https://packagist.org/packages/chubbyphp/chubbyphp-framework-router-hack-fastroute
+
